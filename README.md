@@ -15,6 +15,11 @@ Technology stack used:
 
 ## Welcome to discounts API project 🚀
 
+### Class diagram
+This is the model representation of the entities.
+
+![alt text](./class-diagram.png "Logo Title Text 1")
+
 ### Database startup
 Create and start the database named docker_discounts-postgresql_1 with docker, creating a container from the given yml file:
 
