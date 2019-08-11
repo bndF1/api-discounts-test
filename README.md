@@ -15,12 +15,10 @@ Technology stack used:
 
 ## Welcome to discounts API project 🚀
 
-## Code snippets
-
 ### Database startup
 Create and start the database named docker_discounts-postgresql_1 with docker, creating a container from the given yml file:
 
-`docker-compose -f src/main/resources/docker/posgres.yml up`
+    docker-compose -f src/main/resources/docker/posgres.yml up
 
 If we want to stop, restart, or remove this Docker container, we can use the following commands:
 
@@ -28,7 +26,7 @@ If we want to stop, restart, or remove this Docker container, we can use the fol
      docker start docker_discounts-postgresql_1
      docker rm docker_discounts-postgresql_1
 
-# Development
+### Development
 
 To start your application in the dev profile, simply run:
 
