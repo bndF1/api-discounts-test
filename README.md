@@ -13,7 +13,7 @@ Technology stack used:
 - IntelliJ IDEA 2019.2 (Community Edition)
 - OpenJDK version "11.0.4" 
 
-## Welcome to discounts API project
+## Welcome to discounts API project 🚀
 
 ## Code snippets
 
