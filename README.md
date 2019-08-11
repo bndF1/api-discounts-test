@@ -13,20 +13,21 @@ Technology stack used:
 - IntelliJ IDEA 2019.2 (Community Edition)
 - OpenJDK version "11.0.4" 
 
-## Welcome to discounts API project
-
-## Code snippets
+## Welcome to discounts API project 🚀
 
 ### Database startup
 Create and start the database named docker_discounts-postgresql_1 with docker, creating a container from the given yml file:
 
-`docker-compose -f src/main/resources/docker/posgres.yml up`
+    docker-compose -f src/main/resources/docker/posgres.yml up
 
 If we want to stop, restart, or remove this Docker container, we can use the following commands:
 
-- `docker stop docker_discounts-postgresql_1`
+     docker stop docker_discounts-postgresql_1
+     docker start docker_discounts-postgresql_1
+     docker rm docker_discounts-postgresql_1
 
-- `docker start docker_discounts-postgresql_1`
+### Development
 
-- `docker rm docker_discounts-postgresql_1`
+To start your application in the dev profile, simply run:
 
+    mvn spring-boot:run

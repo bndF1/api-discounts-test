@@ -1,0 +1,9 @@
+version: '2'
+services:
+  discounts-postgresql:
+    image: postgres:10.4
+    environment:
+      - POSTGRES_USER=discounts
+      - POSTGRES_PASSWORD=password
+    ports:
+      - 5432:5432
