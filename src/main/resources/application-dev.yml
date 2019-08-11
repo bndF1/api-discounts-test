@@ -1,0 +1,39 @@
+logging:
+  level:
+    ROOT: ERROR
+    com.bnd.io.discounts: DEBUG
+
+spring:
+  profiles:
+    active: dev
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/discounts
+    username: discounts
+    password: password
+    hikari:
+      maximumPoolSize: 5
+      connectionTimeout: 20000
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    database: POSTGRESQL
+    show-sql: true
+    properties:
+      hibernate.id.new_generator_mappings: true
+      hibernate.connection.provider_disables_autocommit: true
+      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_query_cache: false
+      hibernate.generate_statistics: false
+
+  liquibase:
+    contexts: dev
+
+server:
+  port: 8081

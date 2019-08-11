@@ -24,9 +24,12 @@ Create and start the database named docker_discounts-postgresql_1 with docker, c
 
 If we want to stop, restart, or remove this Docker container, we can use the following commands:
 
-- `docker stop docker_discounts-postgresql_1`
+     docker stop docker_discounts-postgresql_1
+     docker start docker_discounts-postgresql_1
+     docker rm docker_discounts-postgresql_1
 
-- `docker start docker_discounts-postgresql_1`
+# Development
 
-- `docker rm docker_discounts-postgresql_1`
+To start your application in the dev profile, simply run:
 
+    mvn spring-boot:run
