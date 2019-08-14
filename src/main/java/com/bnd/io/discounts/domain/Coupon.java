@@ -8,7 +8,6 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "coupon")
-@Builder(toBuilder = true)
 @Data
 public class Coupon implements Serializable {
 
@@ -17,11 +16,24 @@ public class Coupon implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
   @SequenceGenerator(name = "sequenceGenerator")
-  private final Long id;
+  private Long id;
 
   @Column(name = "coupon_code")
-  private final String couponCode;
+  private String couponCode;
 
   @Column(name = "active")
-  private final Boolean active;
+  private Boolean active;
+
+  @Builder(
+      builderMethodName = "couponBuilder",
+      builderClassName = "CouponBuilderClassName",
+      toBuilder = true)
+  public Coupon(final Long id, final String couponCode, final Boolean active) {
+    this.id = id;
+    this.couponCode = couponCode;
+    this.active = active;
+  }
+
+  @Builder()
+  public Coupon() {}
 }
