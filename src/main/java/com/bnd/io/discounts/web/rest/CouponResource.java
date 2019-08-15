@@ -1,4 +1,4 @@
-package com.bnd.io.discounts.web;
+package com.bnd.io.discounts.web.rest;
 
 import com.bnd.io.discounts.domain.Coupon;
 import com.bnd.io.discounts.service.CouponService;
@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
@@ -40,11 +41,11 @@ public class CouponResource {
     log.debug("REST request to save Coupon : {}", coupon);
     if (coupon.getId() != null) {
       return ResponseEntity.badRequest()
-          .header(ENTITY_NAME, "idexists", "A new coupon cannot already have an ID")
+          .header(ENTITY_NAME, "id_exists", "A new coupon cannot already have an ID")
           .body(null);
     }
     final Coupon result = couponService.save(coupon);
-    return ResponseEntity.ok().body(result);
+    return ResponseEntity.created(new URI("/api/coupons/" + result.getId())).body(result);
   }
 
   /**
@@ -61,7 +62,7 @@ public class CouponResource {
       throws URISyntaxException {
     log.debug("REST request to update Coupon : {}", coupon);
     if (coupon.getId() == null) {
-      return ResponseEntity.badRequest().header(ENTITY_NAME, "idnull", "Invalid id").body(null);
+      return ResponseEntity.badRequest().header(ENTITY_NAME, "id_null", "Invalid id").body(null);
     }
     final Coupon result = couponService.save(coupon);
     return ResponseEntity.ok().body(result);

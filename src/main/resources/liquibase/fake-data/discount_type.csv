@@ -1,0 +1,6 @@
+id;discount_type_code;description
+1;GRATIS;El descuento es igual al total
+2;FIJO-5;Descuenta 5€ al total
+3;FIJO-10;Descuenta 10€ al total
+4;PORCENTAJE-5;Descuenta un 5% al total
+5;PORCENTAJE-10;Descuenta un 10% al total

@@ -5,7 +5,7 @@ spring:
     console:
       enabled: false
   datasource:
-    url: jdbc:h2:mem:discountsdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:mem:discountsdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MULTI_THREADED=FALSE
     driver-class-name: org.h2.Driver
     platform: h2
     initialize: true
@@ -27,4 +27,9 @@ spring:
       hibernate.cache.use_query_cache: false
       hibernate.generate_statistics: true
   liquibase:
+    contexts: test
     change-log: classpath:/liquibase/master.xml
+
+server:
+  port: 10344
+  address: localhost

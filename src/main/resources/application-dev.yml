@@ -1,6 +1,6 @@
 logging:
   level:
-    ROOT: ERROR
+    ROOT: INFO
     com.bnd.io.discounts: DEBUG
 
 spring:
@@ -20,6 +20,7 @@ spring:
     hikari:
       maximumPoolSize: 5
       connectionTimeout: 20000
+      auto-commit: false
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
@@ -31,9 +32,11 @@ spring:
       hibernate.cache.use_second_level_cache: false
       hibernate.cache.use_query_cache: false
       hibernate.generate_statistics: false
+      hibernate.jdbc.lob.non_contextual_creation: true
 
   liquibase:
     contexts: dev
 
 server:
   port: 8081
+

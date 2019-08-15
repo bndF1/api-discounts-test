@@ -1,5 +1,6 @@
 package com.bnd.io.discounts.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Builder;
 import lombok.Data;
 
@@ -24,14 +25,19 @@ public class Coupon implements Serializable {
   @Column(name = "active")
   private Boolean active;
 
+  @ManyToOne
+  @JsonIgnoreProperties("coupons")
+  private DiscountType discountType;
+
   @Builder(
       builderMethodName = "couponBuilder",
       builderClassName = "CouponBuilderClassName",
       toBuilder = true)
-  public Coupon(final Long id, final String couponCode, final Boolean active) {
+  public Coupon(final Long id, final String couponCode, final Boolean active, final DiscountType discountType) {
     this.id = id;
     this.couponCode = couponCode;
     this.active = active;
+    this.discountType = discountType;
   }
 
   @Builder()

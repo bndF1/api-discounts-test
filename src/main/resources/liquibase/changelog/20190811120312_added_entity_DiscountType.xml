@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+
+    <!--
+        Added the entity DiscountType.
+    -->
+    <changeSet id="20190811120312-1" author="bndF1">
+        <createTable tableName="discount_type">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="discount_type_code" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="description" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="20190811120312-1-relations" author="bndF1">
+
+    </changeSet>
+
+    <changeSet id="20190811120312-1-data" author="bndF1" context="dev">
+        <loadData
+                file="liquibase/fake-data/discount_type.csv"
+                separator=";"
+                tableName="discount_type">
+            <column name="id" type="numeric"/>
+            <column name="discount_type_code" type="string"/>
+            <column name="description" type="string"/>
+        </loadData>
+    </changeSet>
+
+</databaseChangeLog>
