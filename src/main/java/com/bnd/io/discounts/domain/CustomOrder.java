@@ -1,9 +1,9 @@
 package com.bnd.io.discounts.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,8 +12,9 @@ import java.util.Set;
 
 @Data
 @Entity
-@EqualsAndHashCode()
-@ToString(callSuper = true)
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "custom_order")
 public class CustomOrder implements Serializable {
 
@@ -30,17 +31,4 @@ public class CustomOrder implements Serializable {
 
   @OneToMany(mappedBy = "customOrder")
   private Set<Product> products = new HashSet<>();
-
-  @Builder(
-      builderMethodName = "customOrderBuilder",
-      builderClassName = "CustomOrderBuilderClassName",
-      toBuilder = true)
-  public CustomOrder(final Long id, final Coupon coupon, final Set<Product> products) {
-    this.id = id;
-    this.coupon = coupon;
-    this.products = products;
-  }
-
-  @Builder()
-  public CustomOrder() {}
 }

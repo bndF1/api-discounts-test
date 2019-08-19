@@ -1,6 +1,7 @@
-package com.bnd.io.discounts.web;
+package com.bnd.io.discounts.web.rest;
 
 import com.bnd.io.discounts.domain.Coupon;
+import com.bnd.io.discounts.domain.DiscountType;
 import com.bnd.io.discounts.repository.CouponRepository;
 import com.bnd.io.discounts.service.CouponService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,6 +18,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,7 +34,6 @@ public class CouponResourceIntTest {
   @Autowired private CouponService couponService;
   @Autowired private MockMvc mockMvc;
   @Autowired private ObjectMapper objectMapper;
-  private Coupon coupon;
 
   @BeforeEach
   private void setUp() {
@@ -44,6 +45,7 @@ public class CouponResourceIntTest {
   }
 
   @Test
+  @Transactional
   public void createCouponShouldNotWorkBecauseAlreadyExist() throws Exception {
     final Coupon coupon = new EasyRandom().nextObject(Coupon.class);
     mockMvc
@@ -55,9 +57,12 @@ public class CouponResourceIntTest {
   }
 
   @Test
+  @Transactional
   public void createCouponShouldWork() throws Exception {
     final EasyRandomParameters parameters = new EasyRandomParameters();
-    parameters.excludeField(FieldPredicates.named("id"));
+    parameters
+        .excludeField(FieldPredicates.named("id"))
+        .excludeField(FieldPredicates.ofType(DiscountType.class));
     final Coupon coupon = new EasyRandom(parameters).nextObject(Coupon.class);
 
     final MockHttpServletResponse response =
@@ -66,7 +71,7 @@ public class CouponResourceIntTest {
                 post("/api/coupons")
                     .contentType("application/json")
                     .content(objectMapper.writeValueAsString(coupon)))
-            .andExpect(status().isOk())
+            .andExpect(status().isCreated())
             .andReturn()
             .getResponse();
 
@@ -80,6 +85,7 @@ public class CouponResourceIntTest {
   }
 
   @Test
+  @Transactional
   public void updateCouponShouldWork() throws Exception {
     final EasyRandomParameters parameters = new EasyRandomParameters();
     parameters.excludeField(FieldPredicates.named("id"));

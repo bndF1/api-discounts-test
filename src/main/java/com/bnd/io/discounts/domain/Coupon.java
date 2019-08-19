@@ -1,15 +1,20 @@
 package com.bnd.io.discounts.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Entity
-@Table(name = "coupon")
 @Data
+@Entity
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "coupon")
 public class Coupon implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -28,18 +33,4 @@ public class Coupon implements Serializable {
   @ManyToOne
   @JsonIgnoreProperties("coupons")
   private DiscountType discountType;
-
-  @Builder(
-      builderMethodName = "couponBuilder",
-      builderClassName = "CouponBuilderClassName",
-      toBuilder = true)
-  public Coupon(final Long id, final String couponCode, final Boolean active, final DiscountType discountType) {
-    this.id = id;
-    this.couponCode = couponCode;
-    this.active = active;
-    this.discountType = discountType;
-  }
-
-  @Builder()
-  public Coupon() {}
 }

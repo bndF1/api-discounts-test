@@ -1,7 +1,9 @@
 package com.bnd.io.discounts.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -9,9 +11,12 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
-@Table(name = "discount_type")
 @Data
+@Entity
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "discount_type")
 public class DiscountType implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -21,7 +26,7 @@ public class DiscountType implements Serializable {
 
   @NotNull
   @Column(name = "discount_type_code", nullable = false)
-  private final String discountTypeCode;
+  private String discountTypeCode;
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
@@ -31,19 +36,19 @@ public class DiscountType implements Serializable {
   @Column(name = "description")
   private String description;
 
-  @Builder(
-      builderMethodName = "discountTypeBuilder",
-      builderClassName = "DiscountTypeBuilderClassName",
-      toBuilder = true)
-  public DiscountType(
-      final Long id, @NotNull final String discountTypeCode, final String description) {
-    this.id = id;
-    this.discountTypeCode = discountTypeCode;
-    this.description = description;
-  }
-
-  @Builder()
-  public DiscountType(final String discountTypeCode) {
-    this.discountTypeCode = discountTypeCode;
-  }
+  //  @Builder(
+  //      builderMethodName = "discountTypeBuilder",
+  //      builderClassName = "DiscountTypeBuilderClassName",
+  //      toBuilder = true)
+  //  public DiscountType(
+  //      final Long id, @NotNull final String discountTypeCode, final String description) {
+  //    this.id = id;
+  //    this.discountTypeCode = discountTypeCode;
+  //    this.description = description;
+  //  }
+  //
+  //  @Builder()
+  //  public DiscountType(final String discountTypeCode) {
+  //    this.discountTypeCode = discountTypeCode;
+  //  }
 }
