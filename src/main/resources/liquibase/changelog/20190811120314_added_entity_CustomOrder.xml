@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+
+    <!--
+        Added the entity CustomOrder.
+    -->
+    <changeSet id="20190811120314-1" author="bndF1">
+        <createTable tableName="custom_order">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="coupon_id" type="bigint">
+                <constraints unique="true" nullable="true" uniqueConstraintName="ux_custom_order_coupon_id"/>
+            </column>
+
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="20190811120314-1-relations" author="bndF1">
+
+    </changeSet>
+
+
+    <changeSet id="20190811120314-1-data" author="bndF1" context="faker">
+        <loadData
+                file="liquibase/fake-data/custom_order.csv"
+                separator=";"
+                tableName="custom_order">
+            <column name="id" type="numeric"/>
+        </loadData>
+    </changeSet>
+
+</databaseChangeLog>

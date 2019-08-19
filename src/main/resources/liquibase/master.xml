@@ -1,6 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <property name="now" value="now()" dbms="h2"/>
+    <property name="now" value="current_timestamp" dbms="postgresql"/>
+
+    <property name="floatType" value="float4" dbms="postgresql, h2"/>
+
+    <property name="uuidType" value="uuid" dbms="h2, postgresql"/>
+
+    <include file="liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/20190811120313_added_entity_Coupon.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/20190811120312_added_entity_DiscountType.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/20190811120315_added_entity_Product.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/20190811120314_added_entity_CustomOrder.xml"
+             relativeToChangelogFile="false"/>
+
+    <include file="liquibase/changelog/20190811120313_added_entity_constraints_Coupon.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/20190811120315_added_entity_constraints_Product.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/20190811120314_added_entity_constraints_CustomOrder.xml"
+             relativeToChangelogFile="false"/>
+
+
 </databaseChangeLog>
