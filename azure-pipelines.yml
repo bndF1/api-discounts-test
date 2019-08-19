@@ -13,7 +13,7 @@ steps:
   inputs:
     mavenPomFile: 'pom.xml'
     goals: 'clean test'
-    options: '-Ptest'
+    options: '-P test'
     publishJUnitResults: false
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.11'
