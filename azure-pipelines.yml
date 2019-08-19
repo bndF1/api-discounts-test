@@ -12,17 +12,12 @@ steps:
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
-    goals: 'clean test'
     options: '-Ptest'
-    publishJUnitResults: true
+    publishJUnitResults: false
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    codeCoverageToolOption: 'JaCoCo'
-    codeCoverageFailIfEmpty: true
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.11'
     mavenVersionOption: 'Default'
     mavenAuthenticateFeed: false
     effectivePomSkip: false
-    sonarQubeRunAnalysis: true
-    sqMavenPluginVersionChoice: 'latest'
-  
+    sonarQubeRunAnalysis: false
