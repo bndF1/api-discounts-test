@@ -9,6 +9,17 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
- - script: |
+- task: Maven@3
+  inputs:
+    mavenPomFile: 'pom.xml'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.11'
+    mavenVersionOption: 'Default'
+    mavenAuthenticateFeed: false
+    effectivePomSkip: false
+    sonarQubeRunAnalysis: false
+- script: |
        mvn clean verify 
-   displayName: 'TESTS: backend'
+  displayName: 'TESTS: backend'
