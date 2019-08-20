@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/bnd360/Discounts%20API/_apis/build/status/bndF1.api-discounts-test?branchName=develop)](https://dev.azure.com/bnd360/Discounts%20API/_build/latest?definitionId=1&branchName=develop)
+
 # Discounts API project
 
 In this project I am going to build a Rest API in order to build the total price of a order for a given discount.
