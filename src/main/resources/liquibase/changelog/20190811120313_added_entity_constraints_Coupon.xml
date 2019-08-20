@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <!--
+        Added the constraints for entity Coupon.
+    -->
+    <changeSet id="20190811120313-2" author="bndF1">
+
+        <addForeignKeyConstraint baseColumnNames="discount_type_id"
+                                 baseTableName="coupon"
+                                 constraintName="fk_coupon_discount_type_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="discount_type"/>
+
+    </changeSet>
+</databaseChangeLog>

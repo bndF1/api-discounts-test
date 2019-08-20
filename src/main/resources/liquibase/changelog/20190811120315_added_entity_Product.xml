@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+
+    <!--
+        Added the entity Product.
+    -->
+    <changeSet id="20190811120315-1" author="bndF1">
+        <createTable tableName="product">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="code" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="price" type="double">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="custom_order_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="20190811120315-1-relations" author="bndF1">
+
+    </changeSet>
+
+    <changeSet id="20190811120315-1-data" author="bndF1" context="faker">
+        <loadData
+                file="liquibase/fake-data/product.csv"
+                separator=";"
+                tableName="product">
+            <column name="id" type="numeric"/>
+            <column name="code" type="string"/>
+            <column name="price" type="numeric"/>
+        </loadData>
+    </changeSet>
+
+</databaseChangeLog>
