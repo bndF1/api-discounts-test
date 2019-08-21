@@ -13,17 +13,13 @@ steps:
   - task: Maven@3
     inputs:
       mavenPomFile: 'pom.xml'
-      publishJUnitResults: true
-      testResultsFiles: '**/surefire-reports/TEST-*.xml'
-      testRunTitle: 'Unit tests'
-      codeCoverageToolOption: 'JaCoCo'
+      mavenOptions: '-Xmx1024m'
       javaHomeOption: 'JDKVersion'
       jdkVersionOption: '1.11'
-      mavenVersionOption: 'Default'
-      mavenAuthenticateFeed: false
-      effectivePomSkip: false
-      sonarQubeRunAnalysis: true
-      sqMavenPluginVersionChoice: 'latest'
+      jdkArchitectureOption: 'x64'
+      publishJUnitResults: true
+      testResultsFiles: '**/surefire-reports/TEST-*.xml'
+      goals: 'package'
 
   - task: PublishCodeCoverageResults@1
     inputs:
