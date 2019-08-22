@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -107,5 +108,12 @@ public class CustomOrderResource {
     log.debug("REST request to delete CustomOrder : {}", id);
     customOrderService.delete(id);
     return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping("/calculate-order-discount")
+  public ResponseEntity<CustomOrder> calculateOrderDiscount(
+      @RequestBody @Valid final CustomOrder order) {
+    log.debug("REST request to calculate discount for CustomOrder : {}", order);
+    return ResponseEntity.ok().body(order);
   }
 }
