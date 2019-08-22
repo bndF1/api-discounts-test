@@ -24,6 +24,12 @@
              relativeToChangelogFile="false"/>
     <include file="liquibase/changelog/20190811120314_added_entity_constraints_CustomOrder.xml"
              relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/20190822120315_add_column_price_to_Order.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/20190822120315_remove_column_relation_with_coupon.xml"
+             relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/20190822130315_add_column_coupon_code.xml"
+             relativeToChangelogFile="false"/>
 
 
 </databaseChangeLog>

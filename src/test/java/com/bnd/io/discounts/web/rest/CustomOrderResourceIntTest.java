@@ -147,11 +147,11 @@ public class CustomOrderResourceIntTest {
         new EasyRandom(parameters)
             .nextObject(CustomOrder.class)
             .toBuilder()
-            .coupon(originalCoupon)
+            .couponCode(originalCoupon.getCouponCode())
             .products(products)
             .build();
     final CustomOrder storedOrder = this.customOrderRepository.saveAndFlush(order);
-    storedOrder.setCoupon(updatedCoupon);
+    storedOrder.setCouponCode(updatedCoupon.getCouponCode());
 
     final MockHttpServletResponse response =
         mockMvc
@@ -165,7 +165,7 @@ public class CustomOrderResourceIntTest {
 
     final CustomOrder orderMapped =
         objectMapper.readValue(response.getContentAsString(), CustomOrder.class);
-    assertThat(orderMapped.getCoupon().getCouponCode()).isEqualTo(updatedCoupon.getCouponCode());
+    assertThat(orderMapped.getCouponCode()).isEqualTo(updatedCoupon.getCouponCode());
   }
 
   @Test

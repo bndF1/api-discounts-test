@@ -114,6 +114,7 @@ public class CustomOrderResource {
   public ResponseEntity<CustomOrder> calculateOrderDiscount(
       @RequestBody @Valid final CustomOrder order) {
     log.debug("REST request to calculate discount for CustomOrder : {}", order);
-    return ResponseEntity.ok().body(order);
+    final CustomOrder updatedOrder = this.customOrderService.calculateOrderDiscount(order);
+    return ResponseEntity.ok().body(updatedOrder);
   }
 }

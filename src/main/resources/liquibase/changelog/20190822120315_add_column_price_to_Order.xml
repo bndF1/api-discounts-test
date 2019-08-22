@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet id="tag-before-adding-price-col" author="bndF1">
+        <tagDatabase tag="before-adding-price-col"/>
+    </changeSet>
+    <changeSet id="add_column_price_to_order" author="bndF1">
+        <addColumn tableName="custom_order">
+            <column name="price" type="double">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="tag-after-adding-price-col" author="bndF1">
+        <tagDatabase tag="after-adding-price-col"/>
+    </changeSet>
+</databaseChangeLog>
