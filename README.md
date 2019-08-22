@@ -1,4 +1,5 @@
 [![Build Status](https://dev.azure.com/bnd360/Discounts%20API/_apis/build/status/bndF1.api-discounts-test?branchName=develop)](https://dev.azure.com/bnd360/Discounts%20API/_build/latest?definitionId=1&branchName=develop)
+[![CodeFactor](https://www.codefactor.io/repository/github/bndf1/api-discounts-test/badge)](https://www.codefactor.io/repository/github/bndf1/api-discounts-test)
 
 # Discounts API project
 
