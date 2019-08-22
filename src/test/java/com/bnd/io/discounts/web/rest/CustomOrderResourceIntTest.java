@@ -49,6 +49,18 @@ public class CustomOrderResourceIntTest {
   @Autowired private CouponRepository couponRepository;
   @Autowired private DiscountTypeRepository discountTypeRepository;
 
+  @Test
+  @Transactional
+  void calculateDiscountFromGivenOrder() throws Exception {
+    final CustomOrder order = new EasyRandom().nextObject(CustomOrder.class);
+    mockMvc
+        .perform(
+            post("/api/calculate-order-discount")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(order)))
+        .andExpect(status().is2xxSuccessful());
+  }
+
   @BeforeEach
   private void setUp() {
     this.deleteAll();
