@@ -55,7 +55,7 @@ public class CustomOrderResourceIntTest {
     final CustomOrder order = new EasyRandom().nextObject(CustomOrder.class);
     mockMvc
         .perform(
-            post("/api/calculate-order-discount")
+            get("/api/calculate-order-discount")
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(order)))
         .andExpect(status().is2xxSuccessful());
