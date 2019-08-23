@@ -1,14 +1,19 @@
 package com.bnd.io.discounts.service.impl;
 
+import com.bnd.io.discounts.domain.Coupon;
 import com.bnd.io.discounts.domain.CustomOrder;
 import com.bnd.io.discounts.domain.Product;
 import com.bnd.io.discounts.repository.CustomOrderRepository;
+import com.bnd.io.discounts.service.CouponService;
 import org.jeasy.random.EasyRandom;
+import org.jeasy.random.EasyRandomParameters;
+import org.jeasy.random.FieldPredicates;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,8 +29,12 @@ import static org.mockito.Mockito.*;
 @ExtendWith(SpringExtension.class)
 class CustomOrderServiceImplTest {
   @Mock Logger log;
+
   @Mock CustomOrderRepository customOrderRepository;
-  @InjectMocks CustomOrderServiceImpl customOrderServiceImpl;
+
+  @Mock CouponService couponService;
+
+  @Spy @InjectMocks CustomOrderServiceImpl customOrderServiceImpl;
 
   @Test
   void testFindAll() {
@@ -50,13 +59,41 @@ class CustomOrderServiceImplTest {
 
   @Test
   void calculateOrderDiscountWithoutCoupon() {
-    final Product shirt =
-        Product.builder().code("CAMISA").price(new EasyRandom().nextDouble()).build();
-    final Product suit =
-        Product.builder().code("TRAJE").price(new EasyRandom().nextDouble()).build();
+
+    final EasyRandomParameters parameters =
+        new EasyRandomParameters().excludeField(FieldPredicates.named("customOrder"));
+    final EasyRandom easyRandom = new EasyRandom(parameters);
+
+    final Product shirt = easyRandom.nextObject(Product.class);
+    final Product suit = easyRandom.nextObject(Product.class);
 
     final CustomOrder customOrder =
         CustomOrder.builder().products(new HashSet<>(Arrays.asList(shirt, suit))).build();
+
+    final CustomOrder updatedOrder =
+        this.customOrderServiceImpl.calculateOrderDiscount(customOrder);
+    assertThat(updatedOrder.getPrice()).isEqualTo(shirt.getPrice() + suit.getPrice());
+  }
+
+  @Test
+  void calculateOrderDiscountWithGivenCouponAndItIsDeactivated() {
+    final EasyRandomParameters parameters =
+        new EasyRandomParameters().excludeField(FieldPredicates.named("customOrder"));
+    final EasyRandom easyRandom = new EasyRandom(parameters);
+
+    final Product shirt = easyRandom.nextObject(Product.class);
+    final Product suit = easyRandom.nextObject(Product.class);
+
+    final Coupon coupon = easyRandom.nextObject(Coupon.class);
+    coupon.setActive(Boolean.FALSE);
+
+    final CustomOrder customOrder =
+        CustomOrder.builder()
+            .products(new HashSet<>(Arrays.asList(shirt, suit)))
+            .couponCode(coupon.getCouponCode())
+            .build();
+
+    when(this.couponService.findByCouponCode(any())).thenReturn(coupon);
 
     final CustomOrder updatedOrder =
         this.customOrderServiceImpl.calculateOrderDiscount(customOrder);
