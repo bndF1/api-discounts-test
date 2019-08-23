@@ -93,7 +93,7 @@ class CustomOrderServiceImplTest {
             .couponCode(coupon.getCouponCode())
             .build();
 
-    when(this.couponService.findByCouponCode(any())).thenReturn(coupon);
+    when(this.couponService.findByCouponCode(any())).thenReturn(Optional.of(coupon));
 
     final CustomOrder updatedOrder =
         this.customOrderServiceImpl.calculateOrderDiscount(customOrder);
