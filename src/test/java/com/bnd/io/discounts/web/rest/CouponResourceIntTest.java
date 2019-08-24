@@ -36,7 +36,7 @@ public class CouponResourceIntTest {
   @Autowired private ObjectMapper objectMapper;
 
   @BeforeEach
-  private void setUp() {
+  void setUp() {
     this.deleteAll();
   }
 
