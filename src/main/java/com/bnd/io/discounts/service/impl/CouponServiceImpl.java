@@ -75,7 +75,7 @@ public class CouponServiceImpl implements CouponService {
   }
 
   @Override
-  public Optional<Coupon> findByCouponCode(final String couponCode) {
-    return Optional.empty();
+  public Optional<Coupon> findByCouponCodeAndActiveIsTrue(final String couponCode) {
+    return this.couponRepository.findByCouponCodeAndActiveIsTrue(couponCode);
   }
 }

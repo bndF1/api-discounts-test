@@ -62,7 +62,7 @@ public class CustomOrderResourceIntTest {
   }
 
   @BeforeEach
-  private void setUp() {
+  void setUp() {
     this.deleteAll();
   }
 
@@ -169,6 +169,7 @@ public class CustomOrderResourceIntTest {
   }
 
   @Test
+  @Transactional
   void testGetAllCustomOrders() throws Exception {
     final EasyRandomParameters easyRandomParameters =
         new EasyRandomParameters()
@@ -196,6 +197,7 @@ public class CustomOrderResourceIntTest {
   }
 
   @Test
+  @Transactional
   void testGetCustomOrder() throws Exception {
     final EasyRandomParameters easyRandomParameters =
         new EasyRandomParameters()
@@ -231,6 +233,7 @@ public class CustomOrderResourceIntTest {
   }
 
   @Test
+  @Transactional
   void testDeleteCustomOrder() throws Exception {
     final CustomOrder order =
         new EasyRandom(

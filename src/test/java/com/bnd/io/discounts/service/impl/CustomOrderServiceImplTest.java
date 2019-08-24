@@ -1,8 +1,9 @@
 package com.bnd.io.discounts.service.impl;
 
-import com.bnd.io.discounts.domain.Coupon;
 import com.bnd.io.discounts.domain.CustomOrder;
 import com.bnd.io.discounts.domain.Product;
+import com.bnd.io.discounts.exceptions.ApiExceptions;
+import com.bnd.io.discounts.exceptions.DeactivatedCouponException;
 import com.bnd.io.discounts.repository.CustomOrderRepository;
 import com.bnd.io.discounts.service.CouponService;
 import org.jeasy.random.EasyRandom;
@@ -18,12 +19,14 @@ import org.slf4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
@@ -37,6 +40,7 @@ class CustomOrderServiceImplTest {
   @Spy @InjectMocks CustomOrderServiceImpl customOrderServiceImpl;
 
   @Test
+  @Transactional
   void testFindAll() {
     when(customOrderRepository.findAll(any(Pageable.class))).thenReturn(null);
 
@@ -45,6 +49,7 @@ class CustomOrderServiceImplTest {
   }
 
   @Test
+  @Transactional
   void testFindOne() {
     when(customOrderRepository.findById(anyLong())).thenReturn(null);
 
@@ -84,19 +89,18 @@ class CustomOrderServiceImplTest {
     final Product shirt = easyRandom.nextObject(Product.class);
     final Product suit = easyRandom.nextObject(Product.class);
 
-    final Coupon coupon = easyRandom.nextObject(Coupon.class);
-    coupon.setActive(Boolean.FALSE);
-
     final CustomOrder customOrder =
         CustomOrder.builder()
             .products(new HashSet<>(Arrays.asList(shirt, suit)))
-            .couponCode(coupon.getCouponCode())
+            .couponCode("NON_ACTIVE")
             .build();
 
-    when(this.couponService.findByCouponCode(any())).thenReturn(Optional.of(coupon));
+    when(this.couponService.findByCouponCodeAndActiveIsTrue(any())).thenReturn(Optional.empty());
 
-    final CustomOrder updatedOrder =
-        this.customOrderServiceImpl.calculateOrderDiscount(customOrder);
-    assertThat(updatedOrder.getPrice()).isEqualTo(shirt.getPrice() + suit.getPrice());
+    final Exception exception =
+        assertThrows(
+            DeactivatedCouponException.class,
+            () -> this.customOrderServiceImpl.calculateOrderDiscount(customOrder));
+    assertThat(exception.getMessage()).isEqualTo(String.valueOf(ApiExceptions.DEACTIVATED_COUPON));
   }
 }

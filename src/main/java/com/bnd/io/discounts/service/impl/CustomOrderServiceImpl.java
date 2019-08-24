@@ -1,8 +1,12 @@
 package com.bnd.io.discounts.service.impl;
 
+import com.bnd.io.discounts.domain.Coupon;
 import com.bnd.io.discounts.domain.CustomOrder;
 import com.bnd.io.discounts.domain.Product;
+import com.bnd.io.discounts.exceptions.ApiExceptions;
+import com.bnd.io.discounts.exceptions.DeactivatedCouponException;
 import com.bnd.io.discounts.repository.CustomOrderRepository;
+import com.bnd.io.discounts.service.CouponService;
 import com.bnd.io.discounts.service.CustomOrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +27,12 @@ public class CustomOrderServiceImpl implements CustomOrderService {
 
   private final CustomOrderRepository customOrderRepository;
 
-  public CustomOrderServiceImpl(final CustomOrderRepository customOrderRepository) {
+  private final CouponService couponService;
+
+  public CustomOrderServiceImpl(
+      final CustomOrderRepository customOrderRepository, final CouponService couponService) {
     this.customOrderRepository = customOrderRepository;
+    this.couponService = couponService;
   }
 
   /**
@@ -79,15 +87,25 @@ public class CustomOrderServiceImpl implements CustomOrderService {
   @Override
   public CustomOrder calculateOrderDiscount(final CustomOrder order) {
     final Double orderPrice = calculatePriceForGivenProducts(order.getProducts());
-    if (order.getCouponCode() == null) {
+    if (order.getCouponCode() == null || order.getCouponCode().trim().equals("")) {
       order.setPrice(orderPrice);
       return order;
     }
-
+    calculateOrderPriceWithGivenCoupon(order);
     return order;
   }
 
   private Double calculatePriceForGivenProducts(final Set<Product> products) {
     return products.stream().mapToDouble(Product::getPrice).sum();
+  }
+
+  private double calculateOrderPriceWithGivenCoupon(final CustomOrder order)
+      throws DeactivatedCouponException {
+    final Coupon coupon =
+        this.couponService
+            .findByCouponCodeAndActiveIsTrue(order.getCouponCode())
+            .orElseThrow(() -> new DeactivatedCouponException(ApiExceptions.DEACTIVATED_COUPON));
+
+    return 0d;
   }
 }

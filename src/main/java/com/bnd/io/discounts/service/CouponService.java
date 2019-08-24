@@ -40,5 +40,5 @@ public interface CouponService {
    */
   void delete(Long id);
 
-  Optional<Coupon> findByCouponCode(String couponCode);
+  Optional<Coupon> findByCouponCodeAndActiveIsTrue(String couponCode);
 }
