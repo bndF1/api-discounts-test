@@ -43,7 +43,7 @@ To start your application in the dev profile, simply run:
     
 ### Running tests
 
-    // TODO
+    mvn clean test
     
     
 # Improvements TODO
