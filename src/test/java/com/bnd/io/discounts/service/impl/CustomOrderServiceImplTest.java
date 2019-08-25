@@ -1,5 +1,6 @@
 package com.bnd.io.discounts.service.impl;
 
+import com.bnd.io.discounts.domain.Coupon;
 import com.bnd.io.discounts.domain.CustomOrder;
 import com.bnd.io.discounts.domain.Product;
 import com.bnd.io.discounts.exceptions.ApiExceptions;
@@ -55,7 +56,7 @@ class CustomOrderServiceImplTest {
   }
 
   @Test
-  void calculateOrderDiscountWithGivenCouponAndItIsDeactivated() {
+  void calculateOrderDiscountWithGivenCouponAndItIsNotFound() {
     final EasyRandomParameters parameters =
         new EasyRandomParameters().excludeField(FieldPredicates.named("customOrder"));
     final EasyRandom easyRandom = new EasyRandom(parameters);
@@ -66,10 +67,37 @@ class CustomOrderServiceImplTest {
     final CustomOrder customOrder =
         CustomOrder.builder()
             .products(new HashSet<>(Arrays.asList(shirt, suit)))
-            .couponCode("NON_ACTIVE")
+            .couponCode("NOT_EXISTENT")
             .build();
 
-    when(this.couponService.findByCouponCodeAndActiveIsTrue(any())).thenReturn(Optional.empty());
+    when(this.couponService.findByCouponCode(any())).thenReturn(Optional.empty());
+
+    final Exception exception =
+        assertThrows(
+            CouponException.class,
+            () -> this.customOrderServiceImpl.calculateOrderDiscount(customOrder));
+    assertThat(exception.getMessage()).isEqualTo(String.valueOf(ApiExceptions.COUPON_NOT_FOUND));
+  }
+
+  @Test
+  void calculateOrderDiscountWithGivenCouponAndItIsDeactivated() {
+    final EasyRandomParameters parameters =
+        new EasyRandomParameters().excludeField(FieldPredicates.named("customOrder"));
+    final EasyRandom easyRandom = new EasyRandom(parameters);
+
+    final Product shirt = easyRandom.nextObject(Product.class);
+    final Product suit = easyRandom.nextObject(Product.class);
+
+    final Coupon coupon = easyRandom.nextObject(Coupon.class);
+    coupon.setActive(Boolean.FALSE);
+
+    final CustomOrder customOrder =
+        CustomOrder.builder()
+            .products(new HashSet<>(Arrays.asList(shirt, suit)))
+            .couponCode("NOT_EXISTENT")
+            .build();
+
+    when(this.couponService.findByCouponCode(any())).thenReturn(Optional.of(coupon));
 
     final Exception exception =
         assertThrows(
