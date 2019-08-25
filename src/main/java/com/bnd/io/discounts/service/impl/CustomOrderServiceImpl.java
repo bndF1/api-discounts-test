@@ -122,7 +122,7 @@ public class CustomOrderServiceImpl implements CustomOrderService {
     if (discountOperation.equals(DiscountOperation.DIRECT)) {
       orderPrice -= coupon.getDiscountType().getDiscount();
     } else if (discountOperation.equals(DiscountOperation.PERCENT)) {
-      orderPrice = (orderPrice * coupon.getDiscountType().getDiscount()) / 100;
+      orderPrice -= (orderPrice * coupon.getDiscountType().getDiscount()) / 100;
     }
 
     return Math.max(orderPrice, 0d);
