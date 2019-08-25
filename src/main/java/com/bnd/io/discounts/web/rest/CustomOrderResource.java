@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -116,5 +117,10 @@ public class CustomOrderResource {
     log.debug("REST request to calculate discount for CustomOrder : {}", order);
     final CustomOrder updatedOrder = this.customOrderService.calculateOrderDiscount(order);
     return ResponseEntity.ok().body(updatedOrder);
+  }
+
+  @ExceptionHandler(RuntimeException.class)
+  public final ResponseEntity<Exception> handleAllExceptions(final RuntimeException ex) {
+    return new ResponseEntity<>(ex, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }

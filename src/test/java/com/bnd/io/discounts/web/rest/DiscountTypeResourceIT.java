@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
-class DiscountTypeResourceIntTest {
+class DiscountTypeResourceIT {
 
   @Autowired private DiscountTypeService discountTypeService;
   @Autowired private DiscountTypeRepository discountTypeRepository;

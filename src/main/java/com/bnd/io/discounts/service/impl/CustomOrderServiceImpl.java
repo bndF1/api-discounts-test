@@ -3,8 +3,9 @@ package com.bnd.io.discounts.service.impl;
 import com.bnd.io.discounts.domain.Coupon;
 import com.bnd.io.discounts.domain.CustomOrder;
 import com.bnd.io.discounts.domain.Product;
+import com.bnd.io.discounts.domain.enums.DiscountOperation;
 import com.bnd.io.discounts.exceptions.ApiExceptions;
-import com.bnd.io.discounts.exceptions.DeactivatedCouponException;
+import com.bnd.io.discounts.exceptions.CouponException;
 import com.bnd.io.discounts.repository.CustomOrderRepository;
 import com.bnd.io.discounts.service.CouponService;
 import com.bnd.io.discounts.service.CustomOrderService;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-import java.util.Set;
 
 /** Service Implementation for managing {@link CustomOrder}. */
 @Service
@@ -86,26 +86,45 @@ public class CustomOrderServiceImpl implements CustomOrderService {
 
   @Override
   public CustomOrder calculateOrderDiscount(final CustomOrder order) {
-    final Double orderPrice = calculatePriceForGivenProducts(order.getProducts());
+    calculatePriceForGivenProducts(order);
     if (order.getCouponCode() == null || order.getCouponCode().trim().equals("")) {
-      order.setPrice(orderPrice);
       return order;
     }
     calculateOrderPriceWithGivenCoupon(order);
     return order;
   }
 
-  private Double calculatePriceForGivenProducts(final Set<Product> products) {
-    return products.stream().mapToDouble(Product::getPrice).sum();
+  private void calculatePriceForGivenProducts(final CustomOrder order) {
+    final double orderPrice = order.getProducts().stream().mapToDouble(Product::getPrice).sum();
+    order.setPrice(orderPrice);
   }
 
-  private double calculateOrderPriceWithGivenCoupon(final CustomOrder order)
-      throws DeactivatedCouponException {
-    final Coupon coupon =
-        this.couponService
-            .findByCouponCodeAndActiveIsTrue(order.getCouponCode())
-            .orElseThrow(() -> new DeactivatedCouponException(ApiExceptions.DEACTIVATED_COUPON));
+  private void calculateOrderPriceWithGivenCoupon(final CustomOrder order) {
+    final Optional<Coupon> byCouponCode =
+        this.couponService.findByCouponCode(order.getCouponCode());
 
-    return 0d;
+    if (byCouponCode.isEmpty()) {
+      throw new CouponException(ApiExceptions.COUPON_NOT_FOUND);
+    }
+
+    final Coupon coupon =
+        byCouponCode
+            .filter(Coupon::getActive)
+            .orElseThrow(() -> new CouponException(ApiExceptions.DEACTIVATED_COUPON));
+
+    final double orderPrice = calculatePrice(order, coupon);
+    order.setPrice(orderPrice);
+  }
+
+  private double calculatePrice(final CustomOrder order, final Coupon coupon) {
+    final DiscountOperation discountOperation = coupon.getDiscountType().getDiscountOperation();
+    double orderPrice = order.getPrice();
+    if (discountOperation.equals(DiscountOperation.DIRECT)) {
+      orderPrice -= coupon.getDiscountType().getDiscount();
+    } else if (discountOperation.equals(DiscountOperation.PERCENT)) {
+      orderPrice = (orderPrice * coupon.getDiscountType().getDiscount()) / 100;
+    }
+
+    return Math.max(orderPrice, 0d);
   }
 }

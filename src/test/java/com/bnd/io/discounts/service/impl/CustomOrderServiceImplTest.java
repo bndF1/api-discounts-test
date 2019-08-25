@@ -3,7 +3,7 @@ package com.bnd.io.discounts.service.impl;
 import com.bnd.io.discounts.domain.CustomOrder;
 import com.bnd.io.discounts.domain.Product;
 import com.bnd.io.discounts.exceptions.ApiExceptions;
-import com.bnd.io.discounts.exceptions.DeactivatedCouponException;
+import com.bnd.io.discounts.exceptions.CouponException;
 import com.bnd.io.discounts.repository.CustomOrderRepository;
 import com.bnd.io.discounts.service.CouponService;
 import org.jeasy.random.EasyRandom;
@@ -73,7 +73,7 @@ class CustomOrderServiceImplTest {
 
     final Exception exception =
         assertThrows(
-            DeactivatedCouponException.class,
+            CouponException.class,
             () -> this.customOrderServiceImpl.calculateOrderDiscount(customOrder));
     assertThat(exception.getMessage()).isEqualTo(String.valueOf(ApiExceptions.DEACTIVATED_COUPON));
   }

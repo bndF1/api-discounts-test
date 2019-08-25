@@ -38,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
-public class CustomOrderResourceIntTest {
+public class CustomOrderResourceIT {
 
   @Autowired private CustomOrderService customOrderService;
   @Autowired private CustomOrderResource customOrderResource;
@@ -49,7 +49,7 @@ public class CustomOrderResourceIntTest {
   @Autowired private CouponRepository couponRepository;
   @Autowired private DiscountTypeRepository discountTypeRepository;
 
-  @Test
+  @Test()
   @Transactional
   void calculateDiscountFromGivenOrder() throws Exception {
     final CustomOrder order = new EasyRandom().nextObject(CustomOrder.class);
@@ -58,7 +58,7 @@ public class CustomOrderResourceIntTest {
             get("/api/calculate-order-discount")
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(order)))
-        .andExpect(status().is2xxSuccessful());
+        .andExpect(status().is5xxServerError());
   }
 
   @BeforeEach
