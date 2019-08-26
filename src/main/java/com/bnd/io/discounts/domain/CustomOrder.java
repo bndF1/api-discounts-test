@@ -25,10 +25,12 @@ public class CustomOrder implements Serializable {
   @SequenceGenerator(name = "sequenceGenerator")
   private Long id;
 
-  @OneToOne
-  @JoinColumn(unique = true)
-  private Coupon coupon;
+  @Column(name = "coupon_code")
+  private String couponCode;
 
   @OneToMany(mappedBy = "customOrder")
   private Set<Product> products = new HashSet<>();
+
+  @Column(name = "price")
+  private double price;
 }

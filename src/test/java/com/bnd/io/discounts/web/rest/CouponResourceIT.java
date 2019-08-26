@@ -29,14 +29,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class CouponResourceIntTest {
+public class CouponResourceIT {
   @Autowired private CouponRepository couponRepository;
   @Autowired private CouponService couponService;
   @Autowired private MockMvc mockMvc;
   @Autowired private ObjectMapper objectMapper;
 
   @BeforeEach
-  private void setUp() {
+  void setUp() {
     this.deleteAll();
   }
 

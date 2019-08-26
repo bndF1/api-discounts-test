@@ -1,5 +1,6 @@
 package com.bnd.io.discounts.domain;
 
+import com.bnd.io.discounts.domain.enums.DiscountOperation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,19 +37,12 @@ public class DiscountType implements Serializable {
   @Column(name = "description")
   private String description;
 
-  //  @Builder(
-  //      builderMethodName = "discountTypeBuilder",
-  //      builderClassName = "DiscountTypeBuilderClassName",
-  //      toBuilder = true)
-  //  public DiscountType(
-  //      final Long id, @NotNull final String discountTypeCode, final String description) {
-  //    this.id = id;
-  //    this.discountTypeCode = discountTypeCode;
-  //    this.description = description;
-  //  }
-  //
-  //  @Builder()
-  //  public DiscountType(final String discountTypeCode) {
-  //    this.discountTypeCode = discountTypeCode;
-  //  }
+  @NotNull
+  @Column(name = "discount", nullable = false)
+  private Double discount;
+
+  @NotNull
+  @Enumerated(EnumType.STRING)
+  @Column(name = "discount_operation", nullable = false)
+  private DiscountOperation discountOperation;
 }

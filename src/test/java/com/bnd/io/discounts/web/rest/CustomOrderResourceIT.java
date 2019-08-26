@@ -38,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
-public class CustomOrderResourceIntTest {
+public class CustomOrderResourceIT {
 
   @Autowired private CustomOrderService customOrderService;
   @Autowired private CustomOrderResource customOrderResource;
@@ -49,8 +49,20 @@ public class CustomOrderResourceIntTest {
   @Autowired private CouponRepository couponRepository;
   @Autowired private DiscountTypeRepository discountTypeRepository;
 
+  @Test()
+  @Transactional
+  void calculateDiscountFromGivenOrder() throws Exception {
+    final CustomOrder order = new EasyRandom().nextObject(CustomOrder.class);
+    mockMvc
+        .perform(
+            get("/api/calculate-order-discount")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(order)))
+        .andExpect(status().is5xxServerError());
+  }
+
   @BeforeEach
-  private void setUp() {
+  void setUp() {
     this.deleteAll();
   }
 
@@ -135,11 +147,11 @@ public class CustomOrderResourceIntTest {
         new EasyRandom(parameters)
             .nextObject(CustomOrder.class)
             .toBuilder()
-            .coupon(originalCoupon)
+            .couponCode(originalCoupon.getCouponCode())
             .products(products)
             .build();
     final CustomOrder storedOrder = this.customOrderRepository.saveAndFlush(order);
-    storedOrder.setCoupon(updatedCoupon);
+    storedOrder.setCouponCode(updatedCoupon.getCouponCode());
 
     final MockHttpServletResponse response =
         mockMvc
@@ -153,10 +165,11 @@ public class CustomOrderResourceIntTest {
 
     final CustomOrder orderMapped =
         objectMapper.readValue(response.getContentAsString(), CustomOrder.class);
-    assertThat(orderMapped.getCoupon().getCouponCode()).isEqualTo(updatedCoupon.getCouponCode());
+    assertThat(orderMapped.getCouponCode()).isEqualTo(updatedCoupon.getCouponCode());
   }
 
   @Test
+  @Transactional
   void testGetAllCustomOrders() throws Exception {
     final EasyRandomParameters easyRandomParameters =
         new EasyRandomParameters()
@@ -184,6 +197,7 @@ public class CustomOrderResourceIntTest {
   }
 
   @Test
+  @Transactional
   void testGetCustomOrder() throws Exception {
     final EasyRandomParameters easyRandomParameters =
         new EasyRandomParameters()
@@ -219,6 +233,7 @@ public class CustomOrderResourceIntTest {
   }
 
   @Test
+  @Transactional
   void testDeleteCustomOrder() throws Exception {
     final CustomOrder order =
         new EasyRandom(
