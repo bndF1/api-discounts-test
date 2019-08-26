@@ -3,7 +3,9 @@ package com.bnd.io.discounts.web.rest;
 import com.bnd.io.discounts.domain.Coupon;
 import com.bnd.io.discounts.domain.DiscountType;
 import com.bnd.io.discounts.repository.CouponRepository;
+import com.bnd.io.discounts.repository.DiscountTypeRepository;
 import com.bnd.io.discounts.service.CouponService;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
@@ -20,23 +22,24 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class CouponResourceIntTest {
+public class CouponResourceIT {
   @Autowired private CouponRepository couponRepository;
+  @Autowired private DiscountTypeRepository discountTypeRepository;
   @Autowired private CouponService couponService;
   @Autowired private MockMvc mockMvc;
   @Autowired private ObjectMapper objectMapper;
 
   @BeforeEach
-  private void setUp() {
+  void setUp() {
     this.deleteAll();
   }
 
@@ -105,5 +108,42 @@ public class CouponResourceIntTest {
 
     final Coupon mappedCoupon = objectMapper.readValue(response.getContentAsString(), Coupon.class);
     assertThat(mappedCoupon.getActive()).isFalse();
+  }
+
+  @Test
+  @Transactional
+  public void findActiveCouponsByDiscountCodeTest() throws Exception {
+    final EasyRandomParameters parameters = new EasyRandomParameters();
+    parameters.excludeField(FieldPredicates.named("id"));
+    final EasyRandom easyRandom = new EasyRandom(parameters);
+
+    final DiscountType discountType = easyRandom.nextObject(DiscountType.class);
+    this.discountTypeRepository.saveAndFlush(discountType);
+
+    final List<Coupon> couponList =
+        easyRandom
+            .objects(Coupon.class, 2)
+            .peek(
+                coupon -> {
+                  coupon.setDiscountType(discountType);
+                  coupon.setActive(true);
+                })
+            .collect(Collectors.toList());
+
+    final List<Coupon> storedCouponList = this.couponRepository.saveAll(couponList);
+
+    final MockHttpServletResponse response =
+        mockMvc
+            .perform(
+                get(
+                        "/api/coupons-by-discount-code/{discountCode}",
+                        discountType.getDiscountTypeCode())
+                    .contentType("application/json"))
+            .andExpect(status().isOk())
+            .andReturn()
+            .getResponse();
+
+    final List<Coupon> couponSet =
+        objectMapper.readValue(response.getContentAsString(), new TypeReference<List<Coupon>>() {});
   }
 }

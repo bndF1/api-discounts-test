@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
-public class ProductResourceIntTest {
+public class ProductResourceIT {
 
   private static final String CONTENT_TYPE = "application/json";
   private Product product;

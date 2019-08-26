@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="tag-before-dropping-fk" author="bndF1">
+        <tagDatabase tag="before-dropping-fk"/>
+    </changeSet>
+
+    <changeSet id="drop_coupon_fk" author="bndF1">
+        <dropForeignKeyConstraint baseTableName="custom_order" constraintName="fk_custom_order_coupon_id"/>
+    </changeSet>
+
+    <changeSet id="drop_col_coupon_id" author="bndF1">
+        <dropColumn tableName="custom_order" columnName="coupon_id"/>
+    </changeSet>
+
+    <changeSet id="tag-after-dropping-fk" author="bndF1">
+        <tagDatabase tag="tag-after-dropping-fk"/>
+    </changeSet>
+</databaseChangeLog>
+
+
