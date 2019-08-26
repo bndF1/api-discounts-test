@@ -145,20 +145,7 @@ public class CouponRepositoryIT {
   void findAllByDiscountType_DiscountTypeCodeEqualsIgnoreCaseAndActiveIsTrueTest() {
     final EasyRandom easyRandom = getEasyRandom();
 
-    final AtomicInteger size = new AtomicInteger(this.discountTypes.size() + 1);
-
-    final List<Coupon> couponList =
-        easyRandom
-            .objects(Coupon.class, this.discountTypes.size())
-            .peek(
-                coupon -> {
-                  final DiscountType discountType =
-                      this.discountTypes.get(easyRandom.nextInt(size.decrementAndGet()));
-                  coupon.setDiscountType(discountType);
-                  coupon.setActive(true);
-                })
-            .collect(Collectors.toList());
-    this.couponRepository.saveAll(couponList);
+    final List<Coupon> couponList = createCouponsByStatus(easyRandom, true);
 
     final DiscountType randomDiscountType =
         this.discountTypes.get(easyRandom.nextInt(this.discountTypes.size()));
@@ -189,6 +176,19 @@ public class CouponRepositoryIT {
       findAllByDiscountType_DiscountTypeCodeEqualsIgnoreCaseAndActiveIsTrueButThereAreNoActiveCouponsTest() {
     final EasyRandom easyRandom = getEasyRandom();
 
+    final List<Coupon> couponList = createCouponsByStatus(easyRandom, false);
+
+    final DiscountType randomDiscountType =
+        this.discountTypes.get(easyRandom.nextInt(this.discountTypes.size()));
+
+    final List<Coupon> activeCouponsByDiscountTypeCode =
+        this.couponRepository.findAllByDiscountType_DiscountTypeCodeEqualsIgnoreCaseAndActiveIsTrue(
+            randomDiscountType.getDiscountTypeCode());
+
+    assertThat(activeCouponsByDiscountTypeCode).isEmpty();
+  }
+
+  private List<Coupon> createCouponsByStatus(final EasyRandom easyRandom, final boolean b) {
     final AtomicInteger size = new AtomicInteger(this.discountTypes.size() + 1);
 
     final List<Coupon> couponList =
@@ -199,18 +199,10 @@ public class CouponRepositoryIT {
                   final DiscountType discountType =
                       this.discountTypes.get(easyRandom.nextInt(size.decrementAndGet()));
                   coupon.setDiscountType(discountType);
-                  coupon.setActive(false);
+                  coupon.setActive(b);
                 })
             .collect(Collectors.toList());
     this.couponRepository.saveAll(couponList);
-
-    final DiscountType randomDiscountType =
-        this.discountTypes.get(easyRandom.nextInt(this.discountTypes.size()));
-
-    final List<Coupon> activeCouponsByDiscountTypeCode =
-        this.couponRepository.findAllByDiscountType_DiscountTypeCodeEqualsIgnoreCaseAndActiveIsTrue(
-            randomDiscountType.getDiscountTypeCode());
-
-    assertThat(activeCouponsByDiscountTypeCode).isEmpty();
+    return couponList;
   }
 }
