@@ -30,7 +30,7 @@ public class Coupon implements Serializable {
   @Column(name = "active")
   private Boolean active;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JsonIgnoreProperties("coupons")
   private DiscountType discountType;
 }
