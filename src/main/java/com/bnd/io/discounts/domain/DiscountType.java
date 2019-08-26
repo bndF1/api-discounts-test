@@ -1,10 +1,7 @@
 package com.bnd.io.discounts.domain;
 
 import com.bnd.io.discounts.domain.enums.DiscountOperation;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -22,6 +19,7 @@ public class DiscountType implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
+  @ToString.Exclude
   @OneToMany(mappedBy = "discountType")
   private final Set<Coupon> coupons = new HashSet<>();
 

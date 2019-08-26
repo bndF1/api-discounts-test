@@ -13,7 +13,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 /** REST controller for managing {@link Coupon}. */
 @RestController
@@ -110,13 +109,12 @@ public class CouponResource {
     return ResponseEntity.noContent().build();
   }
 
-  @GetMapping("/coupons-by-discount-code")
-  public ResponseEntity<Set<Coupon>> findActiveCouponsByDiscountCode(
-      @RequestBody final String discountCode) {
+  @GetMapping("/coupons-by-discount-code/{discountCode}")
+  public ResponseEntity<List<Coupon>> findActiveCouponsByDiscountCode(
+      @PathVariable final String discountCode) {
     log.debug("REST request to find Coupon by discount type code : {}", discountCode);
-    final Set<Coupon> coupons =
-        this.couponService.findByDiscountType_discountTypeCodeEqualsIgnoreCaseAndActiveIsTrue(
-            discountCode);
+    final List<Coupon> coupons =
+        this.couponService.findAllByDiscountTypeCodeAndActiveIsTrue(discountCode);
     return ResponseEntity.ok().body(coupons);
   }
 }
