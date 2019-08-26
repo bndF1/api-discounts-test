@@ -32,6 +32,6 @@
              relativeToChangelogFile="false"/>
     <include file="liquibase/changelog/20190824184815_add_columns_to_discount_type.xml"
              relativeToChangelogFile="false"/>
-
-
+    <include file="liquibase/changelog/20190825130315_update_coupon_data.xml"
+             relativeToChangelogFile="false"/>
 </databaseChangeLog>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="tag-before-update-coupon-data" author="bndF1">
+        <tagDatabase tag="before-update-coupon-data"/>
+    </changeSet>
+
+    <changeSet id="update-data-coupon" author="bndF1" context="dev">
+        <loadUpdateData
+                file="liquibase/fake-data/coupon_update_data.csv"
+                separator=";"
+                tableName="coupon" primaryKey="id">
+            <column name="id" type="numeric"/>
+            <column name="coupon_code" type="string"/>
+            <column name="active" type="boolean"/>
+            <column name="discount_type_id" type="numeric"/>
+        </loadUpdateData>
+    </changeSet>
+
+    <changeSet id="tag-after-update-coupon-data" author="bndF1">
+        <tagDatabase tag="tag-after-update-coupon-data"/>
+    </changeSet>
+</databaseChangeLog>
+
+

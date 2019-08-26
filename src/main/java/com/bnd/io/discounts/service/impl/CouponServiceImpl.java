@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.Set;
 
 /** Service Implementation for managing {@link Coupon}. */
 @Service
@@ -82,5 +83,12 @@ public class CouponServiceImpl implements CouponService {
   @Override
   public Optional<Coupon> findByCouponCode(final String couponCode) {
     return this.couponRepository.findByCouponCode(couponCode);
+  }
+
+  @Override
+  public Set<Coupon> findByDiscountType_discountTypeCodeEqualsIgnoreCaseAndActiveIsTrue(
+      final String discountTypeCode) {
+    return this.couponRepository.findByDiscountType_DiscountTypeCodeEqualsIgnoreCaseAndActiveIsTrue(
+        discountTypeCode);
   }
 }

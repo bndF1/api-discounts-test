@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
+import java.util.Set;
 
 /** Service Interface for managing {@link Coupon}. */
 public interface CouponService {
@@ -43,4 +44,7 @@ public interface CouponService {
   Optional<Coupon> findByCouponCodeAndActiveIsTrue(String couponCode);
 
   Optional<Coupon> findByCouponCode(String couponCode);
+
+  Set<Coupon> findByDiscountType_discountTypeCodeEqualsIgnoreCaseAndActiveIsTrue(
+      String discountTypeCode);
 }
