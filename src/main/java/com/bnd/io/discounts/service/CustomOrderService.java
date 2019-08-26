@@ -13,7 +13,7 @@ public interface CustomOrderService {
    * Save a customOrder.
    *
    * @param customOrder the entity to save.
-   * @return the persisted entity.
+   * @return the persisted entity.get mapping with
    */
   CustomOrder save(CustomOrder customOrder);
 

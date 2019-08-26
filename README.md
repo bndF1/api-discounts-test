@@ -50,3 +50,7 @@ To start your application in the dev profile, simply run:
 
 1. Use DTOs on resources/controllers and no the entities.
 2. Add Spring Security
+3. Add more integration test for calculate order discount
+4. Add argument captors to some unit tests to validate the calls are done right
+
+

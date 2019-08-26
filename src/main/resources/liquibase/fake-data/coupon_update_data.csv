@@ -1,0 +1,8 @@
+id;coupon_code;active;discount_type_id
+1;CUPON-A;true;1
+2;CUPON-B;true;1
+3;CUPON-C;true;2
+4;CUPON-D;true;3
+5;CUPON-E;true;4
+6;CUPON-F;true;5
+7;CUPON-G;false;1

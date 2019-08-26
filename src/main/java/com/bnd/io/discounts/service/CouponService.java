@@ -4,6 +4,7 @@ import com.bnd.io.discounts.domain.Coupon;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 /** Service Interface for managing {@link Coupon}. */
@@ -43,4 +44,6 @@ public interface CouponService {
   Optional<Coupon> findByCouponCodeAndActiveIsTrue(String couponCode);
 
   Optional<Coupon> findByCouponCode(String couponCode);
+
+  List<Coupon> findAllByDiscountTypeCodeAndActiveIsTrue(String discountTypeCode);
 }

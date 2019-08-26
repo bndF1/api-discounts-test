@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 /** Service Implementation for managing {@link Coupon}. */
@@ -82,5 +83,12 @@ public class CouponServiceImpl implements CouponService {
   @Override
   public Optional<Coupon> findByCouponCode(final String couponCode) {
     return this.couponRepository.findByCouponCode(couponCode);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<Coupon> findAllByDiscountTypeCodeAndActiveIsTrue(final String discountTypeCode) {
+    return this.couponRepository
+        .findAllByDiscountType_DiscountTypeCodeEqualsIgnoreCaseAndActiveIsTrue(discountTypeCode);
   }
 }
