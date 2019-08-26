@@ -42,8 +42,15 @@ To start your application in the dev profile, simply run:
     mvn spring-boot:run
     
 ### Running tests
+To run all tests we must do:
+
+    mvn verify
+    
+#### Running Unit tests
+We can run only unit tests with
 
     mvn clean test
+    
     
     
 # Improvements TODO
