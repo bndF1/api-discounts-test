@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,8 +26,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -145,5 +147,33 @@ public class CouponResourceIT {
 
     final List<Coupon> couponSet =
         objectMapper.readValue(response.getContentAsString(), new TypeReference<List<Coupon>>() {});
+  }
+
+  @Test
+  @Transactional
+  public void getAllCoupons() throws Exception {
+    // Initialize the database
+    final EasyRandomParameters parameters = new EasyRandomParameters();
+    parameters.excludeField(FieldPredicates.named("id"));
+
+    final EasyRandom easyRandom = new EasyRandom(parameters);
+
+    final DiscountType discountType = easyRandom.nextObject(DiscountType.class);
+    final DiscountType storedDiscountType = this.discountTypeRepository.saveAndFlush(discountType);
+
+    final Coupon coupon = easyRandom.nextObject(Coupon.class);
+    coupon.setDiscountType(storedDiscountType);
+
+    final Coupon storedCoupon = this.couponRepository.save(coupon);
+
+    // Get all the couponList
+    mockMvc
+        .perform(get("/api/coupons?sort=id,desc"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+        .andExpect(jsonPath("$.[*].id").value(hasItem(storedCoupon.getId().intValue())))
+        .andExpect(jsonPath("$.[*].couponCode").value(hasItem(storedCoupon.getCouponCode())))
+        .andExpect(jsonPath("$.[*].discountType").value(hasItem(storedCoupon.getDiscountType())))
+        .andExpect(jsonPath("$.[*].active").value(hasItem(storedCoupon.getActive())));
   }
 }
