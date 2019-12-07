@@ -22,11 +22,12 @@ public class StrategyFactory {
         Optional.ofNullable(discountOperation)
             .orElseThrow(() -> new IllegalArgumentException("Invalid discount op"));
 
-    return strategies.get(operation);
+    return this.strategies.get(operation);
   }
 
   private void onInitStrategiesByOperation() {
-    strategies.put(DiscountOperation.DIRECT, new StrategyOperations.StrategyOperationDirect());
-    strategies.put(DiscountOperation.PERCENT, new StrategyOperations.StrategyOperationPercent());
+    this.strategies.put(DiscountOperation.DIRECT, new StrategyOperations.StrategyOperationDirect());
+    this.strategies.put(
+        DiscountOperation.PERCENT, new StrategyOperations.StrategyOperationPercent());
   }
 }

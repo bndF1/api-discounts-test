@@ -26,13 +26,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@ExtendWith(SpringExtension.class)
 public class CouponResourceIT {
   @Autowired private CouponRepository couponRepository;
   @Autowired private DiscountTypeRepository discountTypeRepository;
@@ -125,10 +125,11 @@ public class CouponResourceIT {
     final List<Coupon> couponList =
         easyRandom
             .objects(Coupon.class, 2)
-            .peek(
+            .map(
                 coupon -> {
                   coupon.setDiscountType(discountType);
                   coupon.setActive(true);
+                  return coupon;
                 })
             .collect(Collectors.toList());
 
@@ -145,8 +146,10 @@ public class CouponResourceIT {
             .andReturn()
             .getResponse();
 
-    final List<Coupon> couponSet =
+    final List<Coupon> coupons =
         objectMapper.readValue(response.getContentAsString(), new TypeReference<List<Coupon>>() {});
+
+    assertThat(coupons).hasSameElementsAs(storedCouponList);
   }
 
   @Test
@@ -167,13 +170,17 @@ public class CouponResourceIT {
     final Coupon storedCoupon = this.couponRepository.save(coupon);
 
     // Get all the couponList
-    mockMvc
-        .perform(get("/api/coupons?sort=id,desc"))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-        .andExpect(jsonPath("$.[*].id").value(hasItem(storedCoupon.getId().intValue())))
-        .andExpect(jsonPath("$.[*].couponCode").value(hasItem(storedCoupon.getCouponCode())))
-        .andExpect(jsonPath("$.[*].discountType").value(hasItem(storedCoupon.getDiscountType())))
-        .andExpect(jsonPath("$.[*].active").value(hasItem(storedCoupon.getActive())));
+    final MockHttpServletResponse response =
+        mockMvc
+            .perform(get("/api/coupons?sort=id,desc"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andReturn()
+            .getResponse();
+
+    final List<Coupon> coupons =
+        objectMapper.readValue(response.getContentAsString(), new TypeReference<List<Coupon>>() {});
+
+    assertThat(coupons).contains(storedCoupon);
   }
 }

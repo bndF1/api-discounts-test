@@ -9,6 +9,8 @@ import com.bnd.io.discounts.exceptions.ApiExceptions;
 import com.bnd.io.discounts.exceptions.CouponException;
 import com.bnd.io.discounts.repository.CustomOrderRepository;
 import com.bnd.io.discounts.service.CouponService;
+import com.bnd.io.discounts.service.strategy.StrategyFactory;
+import com.bnd.io.discounts.service.strategy.StrategyOperations;
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
 import org.jeasy.random.FieldPredicates;
@@ -37,6 +39,8 @@ class CustomOrderServiceImplTest {
   @Mock CustomOrderRepository customOrderRepository;
 
   @Mock CouponService couponService;
+
+  @Mock StrategyFactory strategyFactory;
 
   @Spy @InjectMocks CustomOrderServiceImpl customOrderServiceImpl;
 
@@ -134,7 +138,8 @@ class CustomOrderServiceImplTest {
             .build();
 
     when(this.couponService.findByCouponCode(any())).thenReturn(Optional.of(coupon));
-
+    when(this.strategyFactory.getStrategy(any(DiscountOperation.class)))
+        .thenReturn(new StrategyOperations.StrategyOperationPercent());
     final CustomOrder customOrderWithDiscount =
         this.customOrderServiceImpl.calculateOrderDiscount(customOrder);
     assertThat(customOrderWithDiscount.getPrice()).isEqualTo(0d);
@@ -168,6 +173,9 @@ class CustomOrderServiceImplTest {
 
     when(this.couponService.findByCouponCode(any())).thenReturn(Optional.of(coupon));
 
+    when(this.strategyFactory.getStrategy(any(DiscountOperation.class)))
+        .thenReturn(new StrategyOperations.StrategyOperationDirect());
+
     final CustomOrder customOrderWithDiscount =
         this.customOrderServiceImpl.calculateOrderDiscount(customOrder);
     assertThat(customOrderWithDiscount.getPrice()).isEqualTo(5d);
@@ -198,6 +206,8 @@ class CustomOrderServiceImplTest {
             .build();
 
     when(this.couponService.findByCouponCode(any())).thenReturn(Optional.of(coupon));
+    when(this.strategyFactory.getStrategy(any(DiscountOperation.class)))
+        .thenReturn(new StrategyOperations.StrategyOperationPercent());
 
     final CustomOrder customOrderWithDiscount =
         this.customOrderServiceImpl.calculateOrderDiscount(customOrder);

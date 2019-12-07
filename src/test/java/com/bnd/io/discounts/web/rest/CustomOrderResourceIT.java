@@ -121,6 +121,7 @@ public class CustomOrderResourceIT {
         new EasyRandomParameters()
             .excludeField(FieldPredicates.named("id"))
             .excludeField(FieldPredicates.ofType(CustomOrder.class));
+
     final Set<Product> products =
         new EasyRandom(easyRandomParameters).objects(Product.class, 2).collect(Collectors.toSet());
     this.productRepository.saveAll(products);
@@ -128,18 +129,9 @@ public class CustomOrderResourceIT {
     final DiscountType discountType = new EasyRandom().nextObject(DiscountType.class);
     final DiscountType storedDiscountType = this.discountTypeRepository.saveAndFlush(discountType);
 
-    final Coupon coupon1 =
-        new EasyRandom()
-            .nextObject(Coupon.class)
-            .toBuilder()
-            .discountType(storedDiscountType)
-            .build();
-    final Coupon coupon2 =
-        new EasyRandom()
-            .nextObject(Coupon.class)
-            .toBuilder()
-            .discountType(storedDiscountType)
-            .build();
+    final Coupon coupon1 = getCoupon(storedDiscountType);
+    final Coupon coupon2 = getCoupon(storedDiscountType);
+
     final Coupon originalCoupon = this.couponRepository.saveAndFlush(coupon1);
     final Coupon updatedCoupon = this.couponRepository.saveAndFlush(coupon2);
 
@@ -168,6 +160,14 @@ public class CustomOrderResourceIT {
     assertThat(orderMapped.getCouponCode()).isEqualTo(updatedCoupon.getCouponCode());
   }
 
+  private Coupon getCoupon(final DiscountType storedDiscountType) {
+    return new EasyRandom()
+        .nextObject(Coupon.class)
+        .toBuilder()
+        .discountType(storedDiscountType)
+        .build();
+  }
+
   @Test
   @Transactional
   void testGetAllCustomOrders() throws Exception {
@@ -186,7 +186,11 @@ public class CustomOrderResourceIT {
                     .excludeField(FieldPredicates.ofType(Coupon.class))
                     .excludeField(FieldPredicates.ofType(HashSet.class)))
             .objects(CustomOrder.class, 5)
-            .peek(customOrder -> customOrder.setProducts(products))
+            .map(
+                customOrder -> {
+                  customOrder.setProducts(products);
+                  return customOrder;
+                })
             .collect(Collectors.toList());
     this.customOrderRepository.saveAll(orderList);
 
