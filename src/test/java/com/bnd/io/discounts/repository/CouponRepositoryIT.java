@@ -54,9 +54,10 @@ public class CouponRepositoryIT {
     final List<Coupon> couponList =
         easyRandom
             .objects(Coupon.class, 4)
-            .peek(
+            .map(
                 coupon -> {
                   coupon.setDiscountType(discountType);
+                  return coupon;
                 })
             .collect(Collectors.toList());
 
@@ -188,7 +189,7 @@ public class CouponRepositoryIT {
     assertThat(activeCouponsByDiscountTypeCode).isEmpty();
   }
 
-  private List<Coupon> createCouponsByStatus(final EasyRandom easyRandom, final boolean b) {
+  private List<Coupon> createCouponsByStatus(final EasyRandom easyRandom, final boolean active) {
     final AtomicInteger size = new AtomicInteger(this.discountTypes.size() + 1);
 
     final List<Coupon> couponList =
@@ -199,7 +200,7 @@ public class CouponRepositoryIT {
                   final DiscountType discountType =
                       this.discountTypes.get(easyRandom.nextInt(size.decrementAndGet()));
                   coupon.setDiscountType(discountType);
-                  coupon.setActive(b);
+                  coupon.setActive(active);
                 })
             .collect(Collectors.toList());
     this.couponRepository.saveAll(couponList);

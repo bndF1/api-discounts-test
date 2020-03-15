@@ -3,12 +3,13 @@ package com.bnd.io.discounts.service.impl;
 import com.bnd.io.discounts.domain.Coupon;
 import com.bnd.io.discounts.domain.CustomOrder;
 import com.bnd.io.discounts.domain.Product;
-import com.bnd.io.discounts.domain.enums.DiscountOperation;
 import com.bnd.io.discounts.exceptions.ApiExceptions;
 import com.bnd.io.discounts.exceptions.CouponException;
 import com.bnd.io.discounts.repository.CustomOrderRepository;
 import com.bnd.io.discounts.service.CouponService;
 import com.bnd.io.discounts.service.CustomOrderService;
+import com.bnd.io.discounts.service.strategy.Strategy;
+import com.bnd.io.discounts.service.strategy.StrategyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -29,10 +30,15 @@ public class CustomOrderServiceImpl implements CustomOrderService {
 
   private final CouponService couponService;
 
+  private final StrategyFactory strategyFactory;
+
   public CustomOrderServiceImpl(
-      final CustomOrderRepository customOrderRepository, final CouponService couponService) {
+      final CustomOrderRepository customOrderRepository,
+      final CouponService couponService,
+      final StrategyFactory strategyFactory) {
     this.customOrderRepository = customOrderRepository;
     this.couponService = couponService;
+    this.strategyFactory = strategyFactory;
   }
 
   /**
@@ -117,14 +123,13 @@ public class CustomOrderServiceImpl implements CustomOrderService {
   }
 
   private double calculatePrice(final CustomOrder order, final Coupon coupon) {
-    final DiscountOperation discountOperation = coupon.getDiscountType().getDiscountOperation();
-    double orderPrice = order.getPrice();
-    if (discountOperation.equals(DiscountOperation.DIRECT)) {
-      orderPrice -= coupon.getDiscountType().getDiscount();
-    } else if (discountOperation.equals(DiscountOperation.PERCENT)) {
-      orderPrice -= (orderPrice * coupon.getDiscountType().getDiscount()) / 100;
-    }
-
+    final double orderPrice = calculatePriceByStrategy(order, coupon);
     return Math.max(orderPrice, 0d);
+  }
+
+  private double calculatePriceByStrategy(final CustomOrder customOrder, final Coupon coupon) {
+    final Strategy strategy =
+        this.strategyFactory.getStrategy(coupon.getDiscountType().getDiscountOperation());
+    return strategy.calculatePrice(customOrder, coupon.getDiscountType().getDiscount());
   }
 }
