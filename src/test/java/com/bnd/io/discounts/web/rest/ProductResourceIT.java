@@ -128,11 +128,8 @@ public class ProductResourceIT {
   @Transactional
   public void checkPriceIsRequired() throws Exception {
     this.product = createAnsSaveProductInRepository();
-    final int databaseSizeBeforeTest = productRepository.findAll().size();
-    // set the field null
     this.product.setPrice(null);
 
-    // Create the Product, which fails.
     mockMvc
         .perform(
             post("/api/products")

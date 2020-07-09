@@ -1,6 +1,8 @@
 package com.bnd.io.discounts.repository;
 
 import com.bnd.io.discounts.domain.Coupon;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -19,4 +21,12 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
   @EntityGraph(attributePaths = {"discountType"})
   List<Coupon> findAllByDiscountType_DiscountTypeCodeEqualsIgnoreCaseAndActiveIsTrue(
       String discountTypeCode);
+
+  @Override
+  @EntityGraph(attributePaths = {"discountType"})
+  Page<Coupon> findAll(Pageable pageable);
+
+  @Override
+  @EntityGraph(attributePaths = {"discountType"})
+  Optional<Coupon> findById(Long aLong);
 }

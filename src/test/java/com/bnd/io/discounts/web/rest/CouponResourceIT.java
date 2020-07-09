@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,11 +27,12 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@ExtendWith(SpringExtension.class)
 public class CouponResourceIT {
   @Autowired private CouponRepository couponRepository;
   @Autowired private DiscountTypeRepository discountTypeRepository;
@@ -123,10 +125,11 @@ public class CouponResourceIT {
     final List<Coupon> couponList =
         easyRandom
             .objects(Coupon.class, 2)
-            .peek(
+            .map(
                 coupon -> {
                   coupon.setDiscountType(discountType);
                   coupon.setActive(true);
+                  return coupon;
                 })
             .collect(Collectors.toList());
 
@@ -143,7 +146,41 @@ public class CouponResourceIT {
             .andReturn()
             .getResponse();
 
-    final List<Coupon> couponSet =
+    final List<Coupon> coupons =
         objectMapper.readValue(response.getContentAsString(), new TypeReference<List<Coupon>>() {});
+
+    assertThat(coupons).hasSameElementsAs(storedCouponList);
+  }
+
+  @Test
+  @Transactional
+  public void getAllCoupons() throws Exception {
+    // Initialize the database
+    final EasyRandomParameters parameters = new EasyRandomParameters();
+    parameters.excludeField(FieldPredicates.named("id"));
+
+    final EasyRandom easyRandom = new EasyRandom(parameters);
+
+    final DiscountType discountType = easyRandom.nextObject(DiscountType.class);
+    final DiscountType storedDiscountType = this.discountTypeRepository.saveAndFlush(discountType);
+
+    final Coupon coupon = easyRandom.nextObject(Coupon.class);
+    coupon.setDiscountType(storedDiscountType);
+
+    final Coupon storedCoupon = this.couponRepository.save(coupon);
+
+    // Get all the couponList
+    final MockHttpServletResponse response =
+        mockMvc
+            .perform(get("/api/coupons?sort=id,desc"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andReturn()
+            .getResponse();
+
+    final List<Coupon> coupons =
+        objectMapper.readValue(response.getContentAsString(), new TypeReference<List<Coupon>>() {});
+
+    assertThat(coupons).contains(storedCoupon);
   }
 }
