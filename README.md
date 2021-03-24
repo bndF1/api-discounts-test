@@ -51,9 +51,12 @@ We can run only unit tests with
 
     mvn clean test
     
+### Running PIT Mutation tests
+Run Pit mutation tests with
+
+    mvn --fail-at-end clean test pitest:mutationCoverage pitest:report-aggregate-module
     
-    
-# Improvements TODO
+# Other improvements TODO
 
 1. Use DTOs on resources/controllers and no the entities.
 2. Add Spring Security

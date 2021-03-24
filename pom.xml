@@ -19,6 +19,7 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
+        <pit.mutation-threshold>70</pit.mutation-threshold>
         <!-- These remain empty unless the corresponding profile is active -->
         <!--        <profile.dev/>-->
     </properties>
@@ -131,6 +132,52 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+                <version>1.6.4</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.pitest</groupId>
+                        <artifactId>pitest-junit5-plugin</artifactId>
+                        <version>0.14</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <timeoutFactor>20000</timeoutFactor>
+                    <outputFormats>
+                        <param>HTML</param>
+                        <param>XML</param>
+                    </outputFormats>
+                    <exportLineCoverage>true</exportLineCoverage>
+                    <timestampedReports>false</timestampedReports>
+                    <mutationThreshold>${pit.mutation-threshold}</mutationThreshold>
+                    <failWhenNoMutations>false</failWhenNoMutations>
+                    <excludedClasses>
+                        <param>com.bnd.io.discounts.DiscountsApplication</param>
+                        <param>com.bnd.io.discounts.config.*</param>
+                        <param>com.bnd.io.discounts.domain.*</param>
+                        <param>com.bnd.io.discounts.repository.*</param>
+                    </excludedClasses>
+                    <targetTests>
+                        <param>com.bnd.io.**.*Test</param>
+                    </targetTests>
+                </configuration>
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>verify</id>-->
+<!--                        <phase>verify</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>mutationCoverage</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <mutators>-->
+<!--                                <value>STRONGER</value>-->
+<!--                            </mutators>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
             </plugin>
         </plugins>
     </build>
